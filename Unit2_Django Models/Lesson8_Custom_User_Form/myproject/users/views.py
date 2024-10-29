@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-# from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import CustomUserCreationForm
 
 def register(request):
@@ -17,3 +17,17 @@ def register(request):
         'form':form
     }
     return render(request, 'users/register.html', context)
+
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data = request.POST)
+        if form.is_valid():
+            # LOGIN HERE
+            return redirect("posts:list")
+    else:
+        form = AuthenticationForm()
+    # Add Boostrsap classes to the form field
+    for field in form.fields.values():
+        field.widget.attrs["class"] = "form-control"
+    context = {"active_link":"login", 'form':form}
+    return render(request, "users/login.html", context)
